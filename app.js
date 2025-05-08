@@ -23,7 +23,7 @@ client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
 
   const bot = new Bot();
-  response = await bot.handleMessage(message);
+  response = await bot.handleMessage(message, client);
   try {
     const obj = JSON.parse(response);
     if (obj.needResponse) {

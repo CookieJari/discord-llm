@@ -40,7 +40,7 @@ class Bot {
     return number;
   }
 
-  async handleMessage(message) {
+  async handleMessage(message, client) {
     if (message.author.bot) return;
 
     // Get the channel and server (guild) details
@@ -66,13 +66,22 @@ class Bot {
       // Log the last 5 messages
       console.log(`--- Last 5 Messages in ${guildName} - ${channelName} ---`);
       messages.reverse().forEach((msg) => {
-        const timestamp = msg.createdAt;
-        const formattedTimestamp = timestamp.toLocaleString();
+        let timestamp = msg.createdAt;
+        let formattedTimestamp = timestamp.toLocaleString();
+        let displayName =
+          msg.member?.displayName ||
+          msg.author.displayName ||
+          msg.author.username;
 
-        let formattedMessage = `[${formattedTimestamp}: ${msg.author.tag}] in [${channelName}]: ${msg.content}`;
-        if (message.author.bot) {
+        console.log(message.author);
+        console.log("MEMBER:\n\n");
+        console.log(message.member);
+        console.log(msg.member.nickname);
+        let formattedMessage = `[${formattedTimestamp}: ${displayName}]: ${msg.cleanContent}`;
+        if (msg.author.id === client.user.id) {
+          // message was sent by the bot
           formattedMessages.push({
-            role: "qwen3:8b",
+            role: "assistant",
             content: formattedMessage,
           });
         } else {
@@ -89,7 +98,7 @@ class Bot {
     console.log(formattedMessages);
     console.log("Starting the response...");
     const response = await ollama.chat({
-      model: "qwen3:8b",
+      model: "gemma3:4b",
       messages: formattedMessages,
       format: this.responseFormat,
     });
