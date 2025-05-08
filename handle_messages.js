@@ -73,10 +73,6 @@ class Bot {
           msg.author.displayName ||
           msg.author.username;
 
-        console.log(message.author);
-        console.log("MEMBER:\n\n");
-        console.log(message.member);
-        console.log(msg.member.nickname);
         let formattedMessage = `[${formattedTimestamp}: ${displayName}]: ${msg.cleanContent}`;
         if (msg.author.id === client.user.id) {
           // message was sent by the bot
