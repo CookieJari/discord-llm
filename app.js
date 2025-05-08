@@ -19,9 +19,19 @@ client.once(Events.ClientReady, (readyClient) => {
 client.login(token); // or your token directly
 
 // ✳️ PUT THIS PART RIGHT BELOW THE READY BLOCK
-client.on("messageCreate", (message) => {
+client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
 
   const bot = new Bot();
-  bot.handleMessage(message);
+  response = await bot.handleMessage(message);
+  try {
+    const obj = JSON.parse(response);
+    if (obj.needResponse) {
+      message.channel.send(obj.message);
+    } else {
+      return;
+    }
+  } catch (error) {
+    console.error("Invalid JSON:", error);
+  }
 });
